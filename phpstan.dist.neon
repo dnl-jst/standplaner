@@ -1,0 +1,21 @@
+includes:
+    - vendor/phpstan/phpstan-symfony/extension.neon
+    - vendor/phpstan/phpstan-doctrine/extension.neon
+
+parameters:
+    level: 4
+    paths:
+        - bin/
+        - config/
+        - public/
+        - src/
+    
+    doctrine:
+        repositoryClass: Doctrine\ORM\EntityRepository
+    
+    symfony:
+        containerXmlPath: var/cache/dev/App_KernelDevDebugContainer.xml
+    
+    excludePaths:
+        - src/Kernel.php
+        - tests/
