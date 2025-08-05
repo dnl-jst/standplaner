@@ -1,71 +1,212 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Willkommen - Standplaner{% endblock %}
+{% block title %}Wahlkampfstände - Standplaner{% endblock %}
 
 {% block body %}
-<div class="row">
-    <div class="col-lg-8 mx-auto">
-        <div class="text-center">
-            <h1 class="display-4 mb-4">
-                <i class="bi bi-calendar3"></i>
-                Willkommen bei Standplaner
-            </h1>
-            <p class="lead mb-4">
-                Verwalten Sie Ihre Stände und Termine effizient und übersichtlich.
-            </p>
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-10 col-xl-8">
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h2 mb-0">
+                    <i class="bi bi-calendar-event me-2"></i>
+                    Kommende Wahlkampfstände
+                </h1>
+                <span class="badge bg-primary fs-6">{{ stands|length }} Stände</span>
+            </div>
+
+            {% if stands is empty %}
+                <!-- Keine Stände vorhanden -->
+                <div class="alert alert-info text-center py-5">
+                    <i class="bi bi-calendar-x display-4 text-muted mb-3"></i>
+                    <h4>Keine Wahlkampfstände geplant</h4>
+                    <p class="mb-0">Es sind derzeit keine Wahlkampfstände in der Planung.</p>
+                </div>
+            {% else %}
+                <!-- Stände-Liste -->
+                <div class="accordion" id="standsAccordion">
+                    {% for stand in stands %}
+                        <div class="card border-0 shadow-sm mb-3">
+                            <div class="card-header bg-white border-0 p-0">
+                                <button class="btn btn-link text-decoration-none p-4 w-100 text-start collapsed" 
+                                        type="button" 
+                                        data-bs-toggle="collapse" 
+                                        data-bs-target="#collapse{{ stand.id }}" 
+                                        aria-expanded="false" 
+                                        aria-controls="collapse{{ stand.id }}">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div class="flex-grow-1 me-3">
+                                            <!-- Stand-Info -->
+                                            <div class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center mb-2">
+                                                <h5 class="mb-1 mb-sm-0 me-sm-3 text-dark">
+                                                    <i class="bi bi-geo-alt-fill text-primary me-2"></i>
+                                                    {{ stand.district }}
+                                                </h5>
+                                                <div class="d-flex flex-wrap gap-2">
+                                                    <span class="badge bg-light text-dark border">
+                                                        <i class="bi bi-calendar3 me-1"></i>
+                                                        {{ stand.startTime|date('d.m.Y') }}
+                                                    </span>
+                                                    <span class="badge bg-light text-dark border">
+                                                        <i class="bi bi-clock me-1"></i>
+                                                        {{ stand.startTime|date('H:i') }} - {{ stand.endTime|date('H:i') }}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            
+                                            {% if stand.address %}
+                                                <p class="text-muted mb-2 small">
+                                                    <i class="bi bi-pin-map me-1"></i>
+                                                    {{ stand.address }}
+                                                </p>
+                                            {% endif %}
+
+                                            <!-- Teilnehmer-Übersicht -->
+                                            <div class="d-flex flex-wrap align-items-center gap-2">
+                                                {% set attendingCount = 0 %}
+                                                {% set maybeCount = 0 %}
+                                                {% set notAttendingCount = 0 %}
+                                                
+                                                {% for participation in stand.participations %}
+                                                    {% if participation.status == 'attending' %}
+                                                        {% set attendingCount = attendingCount + 1 %}
+                                                    {% elseif participation.status == 'maybe' %}
+                                                        {% set maybeCount = maybeCount + 1 %}
+                                                    {% else %}
+                                                        {% set notAttendingCount = notAttendingCount + 1 %}
+                                                    {% endif %}
+                                                {% endfor %}
+
+                                                <small class="text-muted">
+                                                    <i class="bi bi-people me-1"></i>
+                                                    {{ stand.participations|length }} Anmeldungen:
+                                                </small>
+                                                
+                                                {% if attendingCount > 0 %}
+                                                    <span class="badge bg-success-subtle text-success border border-success-subtle">
+                                                        <i class="bi bi-check-circle-fill me-1"></i>
+                                                        {{ attendingCount }}
+                                                    </span>
+                                                {% endif %}
+                                                
+                                                {% if maybeCount > 0 %}
+                                                    <span class="badge bg-warning-subtle text-warning border border-warning-subtle">
+                                                        <i class="bi bi-question-circle-fill me-1"></i>
+                                                        {{ maybeCount }}
+                                                    </span>
+                                                {% endif %}
+                                                
+                                                {% if notAttendingCount > 0 %}
+                                                    <span class="badge bg-danger-subtle text-danger border border-danger-subtle">
+                                                        <i class="bi bi-x-circle-fill me-1"></i>
+                                                        {{ notAttendingCount }}
+                                                    </span>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Pfeil-Icon -->
+                                        <div class="text-muted">
+                                            <i class="bi bi-chevron-down"></i>
+                                        </div>
+                                    </div>
+                                </button>
+                            </div>
+
+                            <!-- Aufklappbarer Inhalt -->
+                            <div id="collapse{{ stand.id }}" 
+                                 class="collapse" 
+                                 data-bs-parent="#standsAccordion">
+                                <div class="card-body pt-0">
+                                    {% if stand.participations is empty %}
+                                        <div class="text-center py-3 text-muted">
+                                            <i class="bi bi-person-plus display-6 mb-2"></i>
+                                            <p class="mb-0">Noch keine Anmeldungen für diesen Stand</p>
+                                        </div>
+                                    {% else %}
+                                        <h6 class="text-muted mb-3">
+                                            <i class="bi bi-people me-2"></i>
+                                            Teilnehmer ({{ stand.participations|length }})
+                                        </h6>
+                                        
+                                        <!-- Teilnehmer-Liste -->
+                                        <div class="row g-2">
+                                            {% for participation in stand.participations %}
+                                                <div class="col-12 col-sm-6 col-lg-4">
+                                                    <div class="d-flex align-items-center p-2 border rounded bg-light">
+                                                        <!-- Status-Icon -->
+                                                        <div class="me-2">
+                                                            {% if participation.status == 'attending' %}
+                                                                <i class="bi bi-check-circle-fill text-success fs-5" title="Nimmt teil"></i>
+                                                            {% elseif participation.status == 'maybe' %}
+                                                                <i class="bi bi-question-circle-fill text-warning fs-5" title="Vielleicht"></i>
+                                                            {% else %}
+                                                                <i class="bi bi-x-circle-fill text-danger fs-5" title="Nimmt nicht teil"></i>
+                                                            {% endif %}
+                                                        </div>
+                                                        
+                                                        <!-- Name -->
+                                                        <div class="flex-grow-1">
+                                                            <span class="fw-medium">{{ participation.participant.name }}</span>
+                                                            <div class="small text-muted">
+                                                                {% if participation.status == 'attending' %}
+                                                                    <span class="text-success">Nimmt teil</span>
+                                                                {% elseif participation.status == 'maybe' %}
+                                                                    <span class="text-warning">Vielleicht</span>
+                                                                {% else %}
+                                                                    <span class="text-danger">Sagt ab</span>
+                                                                {% endif %}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
         </div>
-
-        {% if app.user %}
-            <div class="row g-4">
-                <div class="col-md-6">
-                    <div class="card h-100">
-                        <div class="card-body text-center">
-                            <i class="bi bi-speedometer2 fs-1 text-primary mb-3"></i>
-                            <h5 class="card-title">Dashboard</h5>
-                            <p class="card-text">Überblick über Ihre aktuellen Stände und Termine.</p>
-                            <a href="{{ path('app_dashboard') }}" class="btn btn-primary">
-                                <i class="bi bi-arrow-right"></i>
-                                Zum Dashboard
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card h-100">
-                        <div class="card-body text-center">
-                            <i class="bi bi-calendar-plus fs-1 text-success mb-3"></i>
-                            <h5 class="card-title">Neuer Stand</h5>
-                            <p class="card-text">Erstellen Sie einen neuen Stand oder Termin.</p>
-                            <a href="#" class="btn btn-success">
-                                <i class="bi bi-plus-circle"></i>
-                                Stand erstellen
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="alert alert-info mt-4">
-                <i class="bi bi-info-circle-fill"></i>
-                <strong>Willkommen zurück, {{ app.user.email }}!</strong>
-                Sie sind erfolgreich angemeldet.
-            </div>
-        {% else %}
-            <div class="row justify-content-center">
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-body text-center">
-                            <h5 class="card-title">Anmeldung erforderlich</h5>
-                            <p class="card-text">Melden Sie sich an, um Ihre Stände zu verwalten.</p>
-                            <a href="{{ path('app_login') }}" class="btn btn-primary">
-                                <i class="bi bi-box-arrow-in-right"></i>
-                                Jetzt anmelden
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        {% endif %}
     </div>
 </div>
+
+<style>
+/* Verbesserung für Touch-Geräte */
+@media (max-width: 767.98px) {
+    .accordion-button {
+        font-size: 0.9rem;
+    }
+    
+    .card {
+        margin-bottom: 1rem !important;
+    }
+}
+
+/* Smooth Transitions für Accordion */
+.accordion-button:not(.collapsed) {
+    background-color: #f8f9fa;
+}
+
+.accordion-button:not(.collapsed) .bi-chevron-down {
+    transform: rotate(180deg);
+    transition: transform 0.2s ease-in-out;
+}
+
+.accordion-button .bi-chevron-down {
+    transition: transform 0.2s ease-in-out;
+}
+
+/* Hover-Effekte */
+.card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1) !important;
+}
+</style>
 {% endblock %}
