@@ -81,7 +81,7 @@ class StandParticipation
         if (!in_array($status, [self::STATUS_ATTENDING, self::STATUS_MAYBE, self::STATUS_NOT_ATTENDING])) {
             throw new \InvalidArgumentException('Invalid status: ' . $status);
         }
-        
+
         $this->status = $status;
         $this->updatedAt = new \DateTimeImmutable();
 

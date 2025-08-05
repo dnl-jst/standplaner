@@ -82,10 +82,10 @@ class ParticipantTest extends TestCase
     public function testCreatedAtIsImmutable(): void
     {
         $originalCreatedAt = $this->participant->getCreatedAt();
-        
+
         // Wait a tiny bit to ensure different timestamp
         usleep(1000);
-        
+
         $newCreatedAt = new \DateTimeImmutable();
         $this->participant->setCreatedAt($newCreatedAt);
 

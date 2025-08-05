@@ -45,7 +45,7 @@ class CreateTestDataCommand extends Command
         $this->entityManager->flush();
 
         $io->success('🎉 Alle Testdaten erfolgreich erstellt!');
-        
+
         $io->section('Übersicht der erstellten Daten:');
         foreach ($stands as $stand) {
             $io->writeln(sprintf(
@@ -138,7 +138,7 @@ class CreateTestDataCommand extends Command
             $stand->setAddress($data['address']);
             $stand->setStartTime(new \DateTimeImmutable($data['start']));
             $stand->setEndTime(new \DateTimeImmutable($data['end']));
-            
+
             $this->entityManager->persist($stand);
             $stands[] = $stand;
         }
@@ -159,7 +159,7 @@ class CreateTestDataCommand extends Command
             // Zufällige Anzahl von Teilnehmern pro Stand (3-8)
             $participantCount = rand(3, 8);
             $selectedParticipants = array_rand($participants, $participantCount);
-            
+
             // Sicherstellen, dass wir ein Array haben
             if (!is_array($selectedParticipants)) {
                 $selectedParticipants = [$selectedParticipants];
@@ -167,7 +167,7 @@ class CreateTestDataCommand extends Command
 
             foreach ($selectedParticipants as $participantIndex) {
                 $participant = $participants[$participantIndex];
-                
+
                 // Höhere Wahrscheinlichkeit für "attending" (60%), dann "maybe" (30%), dann "not_attending" (10%)
                 $rand = rand(1, 100);
                 if ($rand <= 60) {
@@ -181,10 +181,10 @@ class CreateTestDataCommand extends Command
                 $participation = new StandParticipation();
                 $participation->setParticipant($participant);
                 $participation->setStatus($status);
-                
+
                 // Verwende die addParticipation Methode für korrekte bidirektionale Beziehung
                 $stand->addParticipation($participation);
-                
+
                 $this->entityManager->persist($participation);
                 $participations[] = $participation;
             }

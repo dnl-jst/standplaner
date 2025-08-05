@@ -130,7 +130,7 @@ class StandParticipationTest extends TestCase
     {
         $now = new \DateTimeImmutable();
         $participation = new StandParticipation();
-        
+
         $this->assertInstanceOf(\DateTimeImmutable::class, $participation->getCreatedAt());
         // Allow for small timing differences
         $this->assertLessThanOrEqual(1, $now->diff($participation->getCreatedAt())->s);
@@ -149,7 +149,7 @@ class StandParticipationTest extends TestCase
         sleep(1);
         $this->participation->setStatus(StandParticipation::STATUS_NOT_ATTENDING);
         $secondUpdate = $this->participation->getUpdatedAt();
-        
+
         $this->assertInstanceOf(\DateTimeImmutable::class, $secondUpdate);
         $this->assertGreaterThanOrEqual($firstUpdate->getTimestamp(), $secondUpdate->getTimestamp());
     }
