@@ -5,7 +5,7 @@ namespace App\Tests\Entity;
 use App\Entity\CampaignStand;
 use PHPUnit\Framework\TestCase;
 
-class CampaignStandTest extends TestCase
+class CampaignStandStatusTest extends TestCase
 {
     public function testIsFuture(): void
     {
