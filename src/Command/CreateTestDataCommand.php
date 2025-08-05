@@ -160,11 +160,8 @@ class CreateTestDataCommand extends Command
             $participantCount = rand(3, 8);
             $selectedParticipants = array_rand($participants, $participantCount);
 
-            // Sicherstellen, dass wir ein Array haben
-            if (!is_array($selectedParticipants)) {
-                $selectedParticipants = [$selectedParticipants];
-            }
-
+            // array_rand mit count > 1 gibt immer ein Array zurück
+            // Bei count = 1 würde es einen einzelnen Key zurückgeben
             foreach ($selectedParticipants as $participantIndex) {
                 $participant = $participants[$participantIndex];
 

@@ -19,3 +19,7 @@ parameters:
     excludePaths:
         - src/Kernel.php
         - tests/
+    
+    # Memory optimierung
+    parallel:
+        maximumNumberOfProcesses: 1

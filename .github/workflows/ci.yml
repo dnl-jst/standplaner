@@ -181,7 +181,7 @@ jobs:
     - name: Run PHPStan (if available)
       run: |
         if [ -f vendor/bin/phpstan ]; then
-          vendor/bin/phpstan analyse --no-progress || echo "PHPStan analysis failed"
+          php -d memory_limit=512M vendor/bin/phpstan analyse --no-progress
         else
           echo "PHPStan not installed"
         fi
