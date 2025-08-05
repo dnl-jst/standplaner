@@ -1,0 +1,83 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ campaign_stand.district }} bearbeiten - Standplaner{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <!-- Header -->
+            <div class="mb-4">
+                <h1 class="h2 mb-2">
+                    <i class="bi bi-pencil me-2"></i>
+                    Stand bearbeiten
+                </h1>
+                <p class="text-muted mb-0">{{ campaign_stand.district }} - {{ campaign_stand.startTime|date('d.m.Y H:i') }}</p>
+            </div>
+
+            <!-- Formular Card -->
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': true}}) }}
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form_row(form.district) }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form_row(form.address) }}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form_row(form.startTime) }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form_row(form.endTime) }}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form_row(form.description) }}
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-check-circle me-2"></i>
+                            Änderungen speichern
+                        </button>
+                        <a href="{{ path('app_campaign_stand_show', {'id': campaign_stand.id}) }}" class="btn btn-outline-primary">
+                            <i class="bi bi-eye me-2"></i>
+                            Details anzeigen
+                        </a>
+                        <a href="{{ path('app_campaign_stand_index') }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left me-2"></i>
+                            Zurück zur Liste
+                        </a>
+                    </div>
+
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Bootstrap Form Validation
+    (function() {
+        'use strict';
+        var forms = document.querySelectorAll('.needs-validation');
+        Array.prototype.slice.call(forms).forEach(function(form) {
+            form.addEventListener('submit', function(event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    })();
+</script>
+{% endblock %}

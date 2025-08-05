@@ -15,18 +15,8 @@ final class HomeController extends AbstractController
     {
         // Alle Stände nach Startzeit sortiert abrufen
         $stands = $campaignStandRepository->findBy([], ['startTime' => 'ASC']);
-
         return $this->render('home/index.html.twig', [
             'stands' => $stands,
-        ]);
-    }
-
-    #[Route('/dashboard', name: 'app_dashboard')]
-    #[IsGranted('ROLE_USER')]
-    public function dashboard(): Response
-    {
-        return $this->render('home/dashboard.html.twig', [
-            'user' => $this->getUser(),
         ]);
     }
 }

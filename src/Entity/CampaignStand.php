@@ -28,6 +28,9 @@ class CampaignStand
     #[ORM\Column(length: 500, nullable: true)]
     private ?string $address = null;
 
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $description = null;
+
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private ?\DateTimeImmutable $createdAt = null;
 
@@ -92,6 +95,18 @@ class CampaignStand
     public function setAddress(?string $address): static
     {
         $this->address = $address;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): static
+    {
+        $this->description = $description;
 
         return $this;
     }
