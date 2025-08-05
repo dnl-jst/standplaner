@@ -90,7 +90,7 @@ jobs:
     - name: Run PHPUnit tests
       run: |
         mkdir -p var
-        php bin/phpunit --coverage-text --coverage-clover=coverage.xml || true
+        php bin/phpunit --coverage-text --coverage-clover=coverage.xml
 
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v3
@@ -148,13 +148,13 @@ jobs:
         echo "APP_SECRET=test-secret-for-lint" >> .env.local
 
     - name: Lint Twig templates
-      run: php bin/console lint:twig templates/ || echo "Twig linting failed"
+      run: php bin/console lint:twig templates/
 
     - name: Lint YAML files
-      run: php bin/console lint:yaml config/ || echo "YAML linting failed"
+      run: php bin/console lint:yaml config/
 
     - name: Lint container
-      run: php bin/console lint:container || echo "Container linting failed"
+      run: php bin/console lint:container
 
   static-analysis:
     runs-on: ubuntu-latest
@@ -187,4 +187,4 @@ jobs:
         fi
 
     - name: Check for deprecated code
-      run: php bin/console debug:container --deprecations || echo "Deprecation check failed"
+      run: php bin/console debug:container --deprecations
