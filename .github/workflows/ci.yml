@@ -1,0 +1,174 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_DB: standplaner_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.2'
+        extensions: mbstring, xml, ctype, iconv, intl, pdo_pgsql, dom, filter, gd, json, pdo
+        tools: composer:v2
+        coverage: xdebug
+
+    - name: Get composer cache directory
+      id: composer-cache
+      run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+    - name: Cache composer dependencies
+      uses: actions/cache@v3
+      with:
+        path: ${{ steps.composer-cache.outputs.dir }}
+        key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+        restore-keys: ${{ runner.os }}-composer-
+
+    - name: Install dependencies
+      run: composer install --no-progress --prefer-dist --optimize-autoloader
+
+    - name: Check PHP syntax
+      run: find src/ -name "*.php" -print0 | xargs -0 -n1 -P4 php -l
+
+    - name: Run PHP CS Fixer (dry run)
+      run: |
+        if [ -f .php-cs-fixer.php ]; then
+          vendor/bin/php-cs-fixer fix --dry-run --diff --verbose
+        else
+          echo "PHP CS Fixer config not found, skipping..."
+        fi
+
+    - name: Setup test environment
+      run: |
+        cp .env .env.test.local
+        echo "DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:5432/standplaner_test" >> .env.test.local
+        echo "APP_ENV=test" >> .env.test.local
+
+    - name: Create database
+      run: |
+        php bin/console doctrine:database:create --env=test
+        php bin/console doctrine:migrations:migrate --no-interaction --env=test
+
+    - name: Load fixtures (if available)
+      run: |
+        if php bin/console list --env=test | grep -q "doctrine:fixtures:load"; then
+          php bin/console doctrine:fixtures:load --no-interaction --env=test
+        else
+          echo "No fixtures available, skipping..."
+        fi
+
+    - name: Run PHPUnit tests
+      run: |
+        php bin/phpunit --coverage-text --coverage-clover=coverage.xml
+
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.xml
+        flags: unittests
+        name: codecov-umbrella
+        fail_ci_if_error: false
+
+  security-check:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.2'
+        extensions: mbstring, xml, ctype, iconv, intl, pdo_pgsql
+        tools: composer:v2
+
+    - name: Install dependencies
+      run: composer install --no-progress --prefer-dist --optimize-autoloader
+
+    - name: Security check
+      run: |
+        if command -v symfony &> /dev/null; then
+          symfony security:check
+        else
+          composer audit
+        fi
+
+  lint:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.2'
+        extensions: mbstring, xml, ctype, iconv, intl, pdo_pgsql
+        tools: composer:v2
+
+    - name: Install dependencies
+      run: composer install --no-progress --prefer-dist --optimize-autoloader
+
+    - name: Lint Twig templates
+      run: php bin/console lint:twig templates/
+
+    - name: Lint YAML files
+      run: php bin/console lint:yaml config/
+
+    - name: Lint container
+      run: php bin/console lint:container
+
+  static-analysis:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.2'
+        extensions: mbstring, xml, ctype, iconv, intl, pdo_pgsql
+        tools: composer:v2
+
+    - name: Install dependencies
+      run: composer install --no-progress --prefer-dist --optimize-autoloader
+
+    - name: Run PHPStan (if available)
+      run: |
+        if [ -f phpstan.neon ] || [ -f phpstan.neon.dist ]; then
+          if command -v vendor/bin/phpstan &> /dev/null; then
+            vendor/bin/phpstan analyse src/ --level=1
+          else
+            echo "PHPStan not installed, skipping..."
+          fi
+        else
+          echo "PHPStan config not found, skipping..."
+        fi
