@@ -16,6 +16,8 @@ jobs:
     permissions:
       contents: read
       packages: write
+      id-token: write  # Für Attestation
+      attestations: write  # Für Attestation
 
     steps:
     - name: Checkout repository
