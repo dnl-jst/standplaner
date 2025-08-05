@@ -23,10 +23,10 @@ final class Version20250805200030 extends AbstractMigration
         // Zuerst die Spalte als nullable hinzufügen
         $this->addSql('ALTER TABLE "user" ADD created_at TIMESTAMP(0) WITHOUT TIME ZONE DEFAULT NULL');
         $this->addSql('COMMENT ON COLUMN "user".created_at IS \'(DC2Type:datetime_immutable)\'');
-        
+
         // Bestehende Benutzer mit aktuellem Zeitstempel füllen
         $this->addSql('UPDATE "user" SET created_at = NOW() WHERE created_at IS NULL');
-        
+
         // Dann die Spalte auf NOT NULL setzen
         $this->addSql('ALTER TABLE "user" ALTER COLUMN created_at SET NOT NULL');
     }

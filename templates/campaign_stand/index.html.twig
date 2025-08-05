@@ -13,7 +13,7 @@
                         <i class="bi bi-calendar-event me-2"></i>
                         Standverwaltung
                     </h1>
-                    <p class="text-muted mb-0">Verwalten Sie alle Wahlkampfstände</p>
+                    <p class="text-muted mb-0">Verwalte alle Wahlkampfstände</p>
                 </div>
                 <div class="mt-3 mt-md-0">
                     <a href="{{ path('app_campaign_stand_new') }}" class="btn btn-success">
@@ -134,7 +134,7 @@
                                                     </a>
                                                     {% if stats.total == 0 %}
                                                         <form method="post" action="{{ path('app_campaign_stand_delete', {'id': stand.id}) }}"
-                                                              onsubmit="return confirm('Sind Sie sicher, dass Sie diesen Stand löschen möchten?')"
+                                                              onsubmit="return confirm('Bist du sicher, dass du diesen Stand löschen möchtest?')"
                                                               class="d-inline">
                                                             <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ stand.id) }}">
                                                             <button class="btn btn-outline-danger btn-sm" title="Löschen">

@@ -8,10 +8,10 @@
         <div class="col-12">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h1>
-                    <i class="bi bi-person-gear"></i> 
+                    <i class="bi bi-person-gear"></i>
                     Benutzer bearbeiten
                     {% if user.id == app.user.id %}
-                        <span class="badge bg-info ms-2">Ihr Profil</span>
+                        <span class="badge bg-info ms-2">Dein Profil</span>
                     {% endif %}
                 </h1>
                 <div>
@@ -55,8 +55,8 @@
                                 <strong>Benutzer:</strong> Kann sich anmelden und das Dashboard nutzen.<br>
                                 <strong>Administrator:</strong> Hat zusätzlich Zugriff auf alle Verwaltungsfunktionen.
                                 {% if user.id == app.user.id %}
-                                    <br><span class="text-warning"><i class="bi bi-exclamation-triangle"></i> 
-                                    Seien Sie vorsichtig beim Ändern Ihrer eigenen Rollen!</span>
+                                    <br><span class="text-warning"><i class="bi bi-exclamation-triangle"></i>
+                                    Sei vorsichtig beim Ändern deiner eigenen Rollen!</span>
                                 {% endif %}
                             </div>
                         </div>
@@ -73,8 +73,8 @@
                             {{ form_errors(form.plainPassword.second) }}
                             <div class="form-text">
                                 <i class="bi bi-shield-lock"></i>
-                                Lassen Sie die Passwort-Felder leer, um das aktuelle Passwort beizubehalten.
-                                Wenn Sie ein neues Passwort setzen, muss es mindestens 6 Zeichen lang sein.
+                                Lass die Passwort-Felder leer, um das aktuelle Passwort beizubehalten.
+                                Wenn du ein neues Passwort setzt, muss es mindestens 6 Zeichen lang sein.
                             </div>
                         </div>
 
@@ -103,11 +103,11 @@
                     <ul class="mb-0">
                         <li><strong>E-Mail-Adresse:</strong> Kann geändert werden, muss aber weiterhin eindeutig sein.</li>
                         <li><strong>Rollen:</strong> Mindestens eine Rolle muss ausgewählt bleiben.</li>
-                        <li><strong>Passwort:</strong> Nur ausfüllen, wenn Sie es ändern möchten.</li>
+                        <li><strong>Passwort:</strong> Nur ausfüllen, wenn du es ändern möchtest.</li>
                         {% if user.id == app.user.id %}
                             <li class="text-warning">
-                                <strong><i class="bi bi-exclamation-triangle"></i> Eigenes Profil:</strong> 
-                                Entfernen Sie nicht Ihre Administrator-Rolle, sonst können Sie nicht mehr auf diese Verwaltung zugreifen!
+                                <strong><i class="bi bi-exclamation-triangle"></i> Eigenes Profil:</strong>
+                                Entferne nicht deine Administrator-Rolle, sonst kannst du nicht mehr auf diese Verwaltung zugreifen!
                             </li>
                         {% endif %}
                     </ul>

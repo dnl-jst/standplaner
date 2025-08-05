@@ -97,7 +97,7 @@ final class UserController extends AbstractController
         if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->request->get('_token'))) {
             // Prüfen, ob der Benutzer sich selbst löschen will
             if ($user === $this->getUser()) {
-                $this->addFlash('error', 'Sie können sich nicht selbst löschen.');
+                $this->addFlash('error', 'Du kannst dich nicht selbst löschen.');
             } else {
                 $entityManager->remove($user);
                 $entityManager->flush();

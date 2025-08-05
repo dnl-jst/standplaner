@@ -9,17 +9,17 @@ parameters:
         - config/
         - public/
         - src/
-    
+
     doctrine:
         repositoryClass: Doctrine\ORM\EntityRepository
-    
+
     symfony:
         containerXmlPath: var/cache/dev/App_KernelDevDebugContainer.xml
-    
+
     excludePaths:
         - src/Kernel.php
         - tests/
-    
+
     # Memory optimierung
     parallel:
         maximumNumberOfProcesses: 1

@@ -35,7 +35,7 @@ Kopiere `.env.prod.example` zu `.env.prod` und konfiguriere:
 
 - `DOMAIN`: Deine Domain (z.B. `standplaner.example.com`)
 - `APP_SECRET`: Sicherer, zufälliger String für Symfony
-- `POSTGRES_*`: Datenbank-Konfiguration  
+- `POSTGRES_*`: Datenbank-Konfiguration
 - `ACME_EMAIL`: E-Mail für Let's Encrypt Zertifikate
 - `TRAEFIK_AUTH`: Basic Auth für Traefik Dashboard
 

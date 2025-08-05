@@ -28,7 +28,7 @@
                         </a>
                         {% if stats.total == 0 %}
                             <form method="post" action="{{ path('app_campaign_stand_delete', {'id': campaign_stand.id}) }}"
-                                  onsubmit="return confirm('Sind Sie sicher, dass Sie diesen Stand löschen möchten?')"
+                                  onsubmit="return confirm('Bist du sicher, dass du diesen Stand löschen möchtest?')"
                                   class="d-inline">
                                 <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ campaign_stand.id) }}">
                                 <button class="btn btn-danger">

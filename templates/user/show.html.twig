@@ -9,10 +9,10 @@
             <div class="d-flex justify-content-between align-items-start mb-4">
                 <div>
                     <h1>
-                        <i class="bi bi-person-circle"></i> 
+                        <i class="bi bi-person-circle"></i>
                         {{ user.email }}
                         {% if user.id == app.user.id %}
-                            <span class="badge bg-info ms-2">Ihr Profil</span>
+                            <span class="badge bg-info ms-2">Dein Profil</span>
                         {% endif %}
                     </h1>
                     <p class="text-muted mb-0">Benutzer-ID: {{ user.id }}</p>
@@ -65,7 +65,7 @@
                                 <dt class="col-sm-4">Erstellt:</dt>
                                 <dd class="col-sm-8">
                                     {% if user.createdAt %}
-                                        <i class="bi bi-calendar3"></i> 
+                                        <i class="bi bi-calendar3"></i>
                                         {{ user.createdAt|date('d.m.Y H:i:s') }}
                                         <br>
                                         <small class="text-muted">
@@ -108,11 +108,11 @@
                                 <a href="{{ path('app_user_edit', {'id': user.id}) }}" class="btn btn-warning">
                                     <i class="bi bi-pencil"></i> Bearbeiten
                                 </a>
-                                
+
                                 {% if user.id != app.user.id %}
-                                    <button type="button" 
-                                            class="btn btn-danger" 
-                                            data-bs-toggle="modal" 
+                                    <button type="button"
+                                            class="btn btn-danger"
+                                            data-bs-toggle="modal"
                                             data-bs-target="#deleteModal">
                                         <i class="bi bi-trash"></i> Löschen
                                     </button>
@@ -137,7 +137,7 @@
                                         Dashboard-Zugriff
                                     </li>
                                 {% endif %}
-                                
+
                                 {% if 'ROLE_ADMIN' in user.roles %}
                                     <li class="mb-2">
                                         <i class="bi bi-check-circle text-success"></i>
@@ -174,12 +174,12 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <p>Sind Sie sicher, dass Sie den Benutzer <strong>{{ user.email }}</strong> löschen möchten?</p>
+                    <p>Bist du sicher, dass du den Benutzer <strong>{{ user.email }}</strong> löschen möchtest?</p>
                     <p class="text-danger">
                         <i class="bi bi-exclamation-triangle"></i>
                         <strong>Diese Aktion kann nicht rückgängig gemacht werden!</strong>
                     </p>
-                    
+
                     <div class="alert alert-warning">
                         <i class="bi bi-info-circle"></i>
                         <strong>Was passiert beim Löschen:</strong>

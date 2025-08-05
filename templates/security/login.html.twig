@@ -22,7 +22,7 @@
                 {% if app.user %}
                     <div class="alert alert-info">
                         <i class="bi bi-info-circle-fill"></i>
-                        Sie sind bereits angemeldet als <strong>{{ app.user.userIdentifier }}</strong>
+                        Du bist bereits angemeldet als <strong>{{ app.user.userIdentifier }}</strong>
                         <a href="{{ path('app_logout') }}" class="alert-link">Abmelden</a>
                     </div>
                 {% else %}
@@ -37,7 +37,7 @@
                                    autocomplete="email"
                                    required
                                    autofocus
-                                   placeholder="ihre@email.de">
+                                   placeholder="deine@email.de">
                         </div>
 
                         <div class="mb-3">
@@ -48,7 +48,7 @@
                                    class="form-control"
                                    autocomplete="current-password"
                                    required
-                                   placeholder="Ihr Passwort">
+                                   placeholder="Dein Passwort">
                         </div>
 
                         <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
