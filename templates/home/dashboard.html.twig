@@ -1,0 +1,139 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dashboard - Standplaner{% endblock %}
+
+{% block body %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>
+                <i class="bi bi-speedometer2"></i>
+                Dashboard
+            </h1>
+            <div>
+                <small class="text-muted">Angemeldet als: <strong>{{ user.email }}</strong></small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-6 col-lg-3">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h5 class="card-title">Aktive Stände</h5>
+                        <h2 class="mb-0">0</h2>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="bi bi-shop fs-1"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-lg-3">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h5 class="card-title">Nächste Termine</h5>
+                        <h2 class="mb-0">0</h2>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="bi bi-calendar-event fs-1"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-lg-3">
+        <div class="card bg-warning text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h5 class="card-title">Ausstehend</h5>
+                        <h2 class="mb-0">0</h2>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="bi bi-exclamation-triangle fs-1"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-lg-3">
+        <div class="card bg-info text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h5 class="card-title">Gesamt</h5>
+                        <h2 class="mb-0">0</h2>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="bi bi-bar-chart fs-1"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="bi bi-calendar3"></i>
+                    Kommende Termine
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="text-center py-4">
+                    <i class="bi bi-calendar-x fs-1 text-muted mb-3"></i>
+                    <p class="text-muted">Keine kommenden Termine vorhanden.</p>
+                    <a href="#" class="btn btn-primary">
+                        <i class="bi bi-plus-circle"></i>
+                        Termin erstellen
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="bi bi-list-task"></i>
+                    Schnellaktionen
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="#" class="btn btn-outline-primary">
+                        <i class="bi bi-plus-circle"></i>
+                        Neuer Stand
+                    </a>
+                    <a href="#" class="btn btn-outline-success">
+                        <i class="bi bi-calendar-plus"></i>
+                        Termin hinzufügen
+                    </a>
+                    <a href="#" class="btn btn-outline-info">
+                        <i class="bi bi-people"></i>
+                        Teilnehmer verwalten
+                    </a>
+                    <a href="#" class="btn btn-outline-secondary">
+                        <i class="bi bi-gear"></i>
+                        Einstellungen
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,28 +1,74 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Log in!{% endblock %}
+{% block title %}Anmelden - Standplaner{% endblock %}
 
 {% block body %}
-<form method="post">
-    {% if error %}
-        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-    {% endif %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-4">
+        <div class="card shadow">
+            <div class="card-body">
+                <h1 class="card-title text-center mb-4">
+                    <i class="bi bi-person-circle"></i>
+                    Anmelden
+                </h1>
 
-    {% if app.user %}
-        <div class="mb-3">
-            You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
+                {% if error %}
+                    <div class="alert alert-danger">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        {{ error.messageKey|trans(error.messageData, 'security') }}
+                    </div>
+                {% endif %}
+
+                {% if app.user %}
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle-fill"></i>
+                        Sie sind bereits angemeldet als <strong>{{ app.user.userIdentifier }}</strong>
+                        <a href="{{ path('app_logout') }}" class="alert-link">Abmelden</a>
+                    </div>
+                {% else %}
+                    <form method="post">
+                        <div class="mb-3">
+                            <label for="inputEmail" class="form-label">E-Mail-Adresse</label>
+                            <input type="email"
+                                   value="{{ last_username }}"
+                                   name="email"
+                                   id="inputEmail"
+                                   class="form-control"
+                                   autocomplete="email"
+                                   required
+                                   autofocus
+                                   placeholder="ihre@email.de">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="inputPassword" class="form-label">Passwort</label>
+                            <input type="password"
+                                   name="password"
+                                   id="inputPassword"
+                                   class="form-control"
+                                   autocomplete="current-password"
+                                   required
+                                   placeholder="Ihr Passwort">
+                        </div>
+
+                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                        <div class="d-grid">
+                            <button class="btn btn-primary btn-lg" type="submit">
+                                <i class="bi bi-box-arrow-in-right"></i>
+                                Anmelden
+                            </button>
+                        </div>
+                    </form>
+                {% endif %}
+            </div>
         </div>
-    {% endif %}
 
-    <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-    <label for="inputEmail">Email</label>
-    <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" autocomplete="email" required autofocus>
-    <label for="inputPassword">Password</label>
-    <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
-    <input type="hidden" name="_csrf_token" data-controller="csrf-protection" value="{{ csrf_token('authenticate') }}">
-
-    <button class="btn btn-lg btn-primary" type="submit">
-        Sign in
-    </button>
-</form>
+        <div class="text-center mt-3">
+            <small class="text-muted">
+                Testbenutzer: admin@example.com / password123
+            </small>
+        </div>
+    </div>
+</div>
 {% endblock %}
