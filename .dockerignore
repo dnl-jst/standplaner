@@ -1,0 +1,46 @@
+# Git
+.git
+.gitignore
+
+# Docker
+Dockerfile
+docker-compose*.yml
+.dockerignore
+
+# Documentation
+README.md
+*.md
+
+# Tests
+tests/
+phpunit.xml*
+
+# Development
+.env.local
+.env.*.local
+var/cache/dev/
+var/cache/test/
+var/log/
+
+# Node modules (falls verwendet)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Backup files
+*.bak
+*.backup
+
+# Deployment
+deploy.sh
+.env.prod*

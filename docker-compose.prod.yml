@@ -1,0 +1,126 @@
+version: '3.8'
+
+services:
+  app:
+    image: ghcr.io/dnl-jst/standplaner:latest
+    restart: unless-stopped
+    depends_on:
+      - db
+      - redis
+    environment:
+      APP_ENV: prod
+      APP_SECRET: ${APP_SECRET}
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}?serverVersion=16&charset=utf8
+      REDIS_URL: redis://redis:6379
+      DATABASE_HOST: db
+      DATABASE_PORT: 5432
+      MAILER_DSN: ${MAILER_DSN:-null://null}
+      # Weitere Umgebungsvariablen nach Bedarf
+    networks:
+      - app-network
+    volumes:
+      - app-uploads:/var/www/html/public/uploads
+      - app-logs:/var/www/html/var/log
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.standplaner.rule=Host(`${DOMAIN}`)"
+      - "traefik.http.routers.standplaner.tls=true"
+      - "traefik.http.routers.standplaner.tls.certresolver=letsencrypt"
+      - "traefik.http.services.standplaner.loadbalancer.server.port=80"
+
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    volumes:
+      - redis-data:/data
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  traefik:
+    image: traefik:v3.0
+    restart: unless-stopped
+    command:
+      - "--api.dashboard=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--certificatesresolvers.letsencrypt.acme.httpchallenge=true"
+      - "--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web"
+      - "--certificatesresolvers.letsencrypt.acme.email=${ACME_EMAIL}"
+      - "--certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json"
+      # Redirect HTTP to HTTPS
+      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"  # Traefik Dashboard
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - traefik-letsencrypt:/letsencrypt
+    networks:
+      - app-network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik.rule=Host(`traefik.${DOMAIN}`)"
+      - "traefik.http.routers.traefik.tls=true"
+      - "traefik.http.routers.traefik.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.traefik.service=api@internal"
+      - "traefik.http.middlewares.traefik-auth.basicauth.users=${TRAEFIK_AUTH}"
+
+  # Optional: Backup Service
+  backup:
+    image: postgres:16-alpine
+    restart: "no"
+    depends_on:
+      - db
+    environment:
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - ./backups:/backups
+      - postgres-data:/var/lib/postgresql/data:ro
+    networks:
+      - app-network
+    command: |
+      sh -c "
+        mkdir -p /backups
+        pg_dump -h db -U ${POSTGRES_USER} -d ${POSTGRES_DB} > /backups/backup_$$(date +%Y%m%d_%H%M%S).sql
+        find /backups -name '*.sql' -mtime +7 -delete
+      "
+    profiles:
+      - backup
+
+volumes:
+  postgres-data:
+  redis-data:
+  app-uploads:
+  app-logs:
+  traefik-letsencrypt:
+
+networks:
+  app-network:
+    driver: bridge
