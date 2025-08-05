@@ -1,0 +1,208 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Benutzer: {{ user.email }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-start mb-4">
+                <div>
+                    <h1>
+                        <i class="bi bi-person-circle"></i> 
+                        {{ user.email }}
+                        {% if user.id == app.user.id %}
+                            <span class="badge bg-info ms-2">Ihr Profil</span>
+                        {% endif %}
+                    </h1>
+                    <p class="text-muted mb-0">Benutzer-ID: {{ user.id }}</p>
+                </div>
+                <div>
+                    <a href="{{ path('app_user_edit', {'id': user.id}) }}" class="btn btn-warning me-2">
+                        <i class="bi bi-pencil"></i> Bearbeiten
+                    </a>
+                    <a href="{{ path('app_user_index') }}" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Zurück zur Übersicht
+                    </a>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="bi bi-info-circle"></i> Benutzerinformationen
+                        </div>
+                        <div class="card-body">
+                            <dl class="row">
+                                <dt class="col-sm-4">E-Mail-Adresse:</dt>
+                                <dd class="col-sm-8">
+                                    <i class="bi bi-envelope"></i> {{ user.email }}
+                                </dd>
+
+                                <dt class="col-sm-4">Benutzerrollen:</dt>
+                                <dd class="col-sm-8">
+                                    {% for role in user.roles %}
+                                        {% if role == 'ROLE_ADMIN' %}
+                                            <span class="badge bg-danger me-1">
+                                                <i class="bi bi-shield-fill-check"></i> Administrator
+                                            </span>
+                                        {% elseif role == 'ROLE_USER' %}
+                                            <span class="badge bg-primary me-1">
+                                                <i class="bi bi-person"></i> Benutzer
+                                            </span>
+                                        {% else %}
+                                            <span class="badge bg-secondary me-1">{{ role }}</span>
+                                        {% endif %}
+                                    {% endfor %}
+                                </dd>
+
+                                <dt class="col-sm-4">Benutzer-ID:</dt>
+                                <dd class="col-sm-8">
+                                    <code>{{ user.id }}</code>
+                                </dd>
+
+                                <dt class="col-sm-4">Erstellt:</dt>
+                                <dd class="col-sm-8">
+                                    {% if user.createdAt %}
+                                        <i class="bi bi-calendar3"></i> 
+                                        {{ user.createdAt|date('d.m.Y H:i:s') }}
+                                        <br>
+                                        <small class="text-muted">
+                                            {% set timeDiff = "now"|date('U') - user.createdAt|date('U') %}
+                                            {% if timeDiff < 60 %}
+                                                vor {{ timeDiff }} Sekunden
+                                            {% elseif timeDiff < 3600 %}
+                                                vor {{ (timeDiff / 60)|round }} Minuten
+                                            {% elseif timeDiff < 86400 %}
+                                                vor {{ (timeDiff / 3600)|round }} Stunden
+                                            {% else %}
+                                                vor {{ (timeDiff / 86400)|round }} Tagen
+                                            {% endif %}
+                                        </small>
+                                    {% else %}
+                                        <span class="text-muted">
+                                            <i class="bi bi-question-circle"></i> Unbekannt
+                                        </span>
+                                    {% endif %}
+                                </dd>
+
+                                <dt class="col-sm-4">Passwort:</dt>
+                                <dd class="col-sm-8">
+                                    <span class="text-muted">
+                                        <i class="bi bi-shield-lock"></i> Sicher verschlüsselt
+                                    </span>
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="bi bi-gear"></i> Aktionen
+                        </div>
+                        <div class="card-body">
+                            <div class="d-grid gap-2">
+                                <a href="{{ path('app_user_edit', {'id': user.id}) }}" class="btn btn-warning">
+                                    <i class="bi bi-pencil"></i> Bearbeiten
+                                </a>
+                                
+                                {% if user.id != app.user.id %}
+                                    <button type="button" 
+                                            class="btn btn-danger" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#deleteModal">
+                                        <i class="bi bi-trash"></i> Löschen
+                                    </button>
+                                {% else %}
+                                    <button type="button" class="btn btn-outline-secondary" disabled>
+                                        <i class="bi bi-slash-circle"></i> Kann sich nicht selbst löschen
+                                    </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card mt-3">
+                        <div class="card-header">
+                            <i class="bi bi-shield-check"></i> Berechtigungen
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-unstyled mb-0">
+                                {% if 'ROLE_USER' in user.roles %}
+                                    <li class="mb-2">
+                                        <i class="bi bi-check-circle text-success"></i>
+                                        Dashboard-Zugriff
+                                    </li>
+                                {% endif %}
+                                
+                                {% if 'ROLE_ADMIN' in user.roles %}
+                                    <li class="mb-2">
+                                        <i class="bi bi-check-circle text-success"></i>
+                                        Standverwaltung
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="bi bi-check-circle text-success"></i>
+                                        Benutzerverwaltung
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="bi bi-check-circle text-success"></i>
+                                        Alle Admin-Bereiche
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if user.id != app.user.id %}
+    <!-- Delete Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="bi bi-exclamation-triangle text-danger"></i>
+                        Benutzer löschen
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Sind Sie sicher, dass Sie den Benutzer <strong>{{ user.email }}</strong> löschen möchten?</p>
+                    <p class="text-danger">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        <strong>Diese Aktion kann nicht rückgängig gemacht werden!</strong>
+                    </p>
+                    
+                    <div class="alert alert-warning">
+                        <i class="bi bi-info-circle"></i>
+                        <strong>Was passiert beim Löschen:</strong>
+                        <ul class="mb-0 mt-2">
+                            <li>Der Benutzer kann sich nicht mehr anmelden</li>
+                            <li>Alle Sitzungen werden beendet</li>
+                            <li>Das Benutzerkonto wird dauerhaft entfernt</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Abbrechen
+                    </button>
+                    <form method="post" action="{{ path('app_user_delete', {'id': user.id}) }}" style="display: inline;">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-trash"></i> Endgültig löschen
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,121 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Benutzer bearbeiten{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1>
+                    <i class="bi bi-person-gear"></i> 
+                    Benutzer bearbeiten
+                    {% if user.id == app.user.id %}
+                        <span class="badge bg-info ms-2">Ihr Profil</span>
+                    {% endif %}
+                </h1>
+                <div>
+                    <a href="{{ path('app_user_show', {'id': user.id}) }}" class="btn btn-info me-2">
+                        <i class="bi bi-eye"></i> Anzeigen
+                    </a>
+                    <a href="{{ path('app_user_index') }}" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Zurück zur Übersicht
+                    </a>
+                </div>
+            </div>
+
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="card-body">
+                    {{ form_start(form) }}
+                        <div class="mb-3">
+                            {{ form_label(form.email) }}
+                            {{ form_widget(form.email) }}
+                            {{ form_errors(form.email) }}
+                            <div class="form-text">
+                                <i class="bi bi-info-circle"></i>
+                                Die E-Mail-Adresse dient als Benutzername für die Anmeldung.
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form_label(form.roles) }}
+                            <div class="mt-2">
+                                {% for choice in form.roles %}
+                                    <div class="form-check">
+                                        {{ form_widget(choice, {'attr': {'class': 'form-check-input'}}) }}
+                                        {{ form_label(choice, null, {'label_attr': {'class': 'form-check-label'}}) }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            {{ form_errors(form.roles) }}
+                            <div class="form-text">
+                                <i class="bi bi-info-circle"></i>
+                                <strong>Benutzer:</strong> Kann sich anmelden und das Dashboard nutzen.<br>
+                                <strong>Administrator:</strong> Hat zusätzlich Zugriff auf alle Verwaltungsfunktionen.
+                                {% if user.id == app.user.id %}
+                                    <br><span class="text-warning"><i class="bi bi-exclamation-triangle"></i> 
+                                    Seien Sie vorsichtig beim Ändern Ihrer eigenen Rollen!</span>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form_label(form.plainPassword.first) }}
+                            {{ form_widget(form.plainPassword.first) }}
+                            {{ form_errors(form.plainPassword.first) }}
+                        </div>
+
+                        <div class="mb-4">
+                            {{ form_label(form.plainPassword.second) }}
+                            {{ form_widget(form.plainPassword.second) }}
+                            {{ form_errors(form.plainPassword.second) }}
+                            <div class="form-text">
+                                <i class="bi bi-shield-lock"></i>
+                                Lassen Sie die Passwort-Felder leer, um das aktuelle Passwort beizubehalten.
+                                Wenn Sie ein neues Passwort setzen, muss es mindestens 6 Zeichen lang sein.
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <a href="{{ path('app_user_show', {'id': user.id}) }}" class="btn btn-secondary me-2">
+                                    <i class="bi bi-x-circle"></i> Abbrechen
+                                </a>
+                                <a href="{{ path('app_user_index') }}" class="btn btn-outline-secondary">
+                                    <i class="bi bi-list"></i> Zur Übersicht
+                                </a>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle"></i> Änderungen speichern
+                            </button>
+                        </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+
+            <div class="card mt-4">
+                <div class="card-header">
+                    <i class="bi bi-lightbulb"></i> Hinweise zum Bearbeiten
+                </div>
+                <div class="card-body">
+                    <ul class="mb-0">
+                        <li><strong>E-Mail-Adresse:</strong> Kann geändert werden, muss aber weiterhin eindeutig sein.</li>
+                        <li><strong>Rollen:</strong> Mindestens eine Rolle muss ausgewählt bleiben.</li>
+                        <li><strong>Passwort:</strong> Nur ausfüllen, wenn Sie es ändern möchten.</li>
+                        {% if user.id == app.user.id %}
+                            <li class="text-warning">
+                                <strong><i class="bi bi-exclamation-triangle"></i> Eigenes Profil:</strong> 
+                                Entfernen Sie nicht Ihre Administrator-Rolle, sonst können Sie nicht mehr auf diese Verwaltung zugreifen!
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
