@@ -11,6 +11,8 @@ RUN apk add --no-cache \
     libjpeg-turbo-dev \
     freetype-dev \
     icu-dev \
+    nodejs \
+    npm \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) \
         pdo_pgsql \
@@ -35,6 +37,12 @@ RUN composer install --no-dev --optimize-autoloader --no-scripts --no-interactio
 
 # Kopiere Anwendungscode
 COPY . .
+
+# Installiere ImportMap Assets (Bootstrap etc.)
+RUN php bin/console importmap:install --env=prod
+
+# Kompiliere Assets für Production
+RUN php bin/console asset-map:compile --env=prod
 
 # Setze Berechtigungen
 RUN chown -R app:app /var/www/html \
