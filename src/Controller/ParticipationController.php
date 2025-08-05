@@ -17,8 +17,8 @@ class ParticipationController extends AbstractController
     #[Route('/anmeldung', name: 'app_participation')]
     public function index(CampaignStandRepository $campaignStandRepository): Response
     {
-        // Alle Stände nach Startzeit sortiert abrufen
-        $stands = $campaignStandRepository->findBy([], ['startTime' => 'ASC']);
+        // Nur aktive Stände für Anmeldung anzeigen (zukünftige + laufende)
+        $stands = $campaignStandRepository->findActive();
 
         return $this->render('participation/index.html.twig', [
             'stands' => $stands,
@@ -62,13 +62,18 @@ class ParticipationController extends AbstractController
         foreach ($participations as $standId => $status) {
             if (in_array($status, ['attending', 'maybe', 'not_attending'])) {
                 $stand = $campaignStandRepository->find($standId);
-                if ($stand) {
+                if ($stand && $stand->canRegister()) {
                     $participation = new StandParticipation();
                     $participation->setParticipant($participant);
                     $participation->setStatus($status);
                     $stand->addParticipation($participation);
                     $entityManager->persist($participation);
                     $savedCount++;
+                } elseif ($stand && !$stand->canRegister()) {
+                    $this->addFlash('warning', sprintf(
+                        'Anmeldung für "%s" nicht mehr möglich - der Stand hat bereits begonnen oder ist beendet.',
+                        $stand->getDistrict()
+                    ));
                 }
             }
         }

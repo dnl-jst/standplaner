@@ -162,4 +162,55 @@ class CampaignStand
             $this->endTime?->format('H:i')
         );
     }
+
+    /**
+     * Prüft ob der Stand in der Zukunft liegt (Anmeldung möglich)
+     */
+    public function isFuture(): bool
+    {
+        $now = new \DateTimeImmutable();
+        return $this->startTime && $this->startTime > $now;
+    }
+
+    /**
+     * Prüft ob der Stand aktuell läuft (zwischen Start- und Endzeit)
+     */
+    public function isRunning(): bool
+    {
+        $now = new \DateTimeImmutable();
+        return $this->startTime && $this->endTime
+            && $this->startTime <= $now
+            && $this->endTime > $now;
+    }
+
+    /**
+     * Prüft ob der Stand bereits beendet ist
+     */
+    public function isFinished(): bool
+    {
+        $now = new \DateTimeImmutable();
+        return $this->endTime && $this->endTime <= $now;
+    }
+
+    /**
+     * Gibt den Status als String zurück
+     */
+    public function getStatus(): string
+    {
+        if ($this->isFuture()) {
+            return 'future';
+        } elseif ($this->isRunning()) {
+            return 'running';
+        } else {
+            return 'finished';
+        }
+    }
+
+    /**
+     * Prüft ob eine Anmeldung möglich ist (nur bei zukünftigen Ständen)
+     */
+    public function canRegister(): bool
+    {
+        return $this->isFuture();
+    }
 }

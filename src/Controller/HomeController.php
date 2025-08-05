@@ -13,8 +13,8 @@ final class HomeController extends AbstractController
     #[Route('/', name: 'app_home')]
     public function index(CampaignStandRepository $campaignStandRepository): Response
     {
-        // Alle Stände nach Startzeit sortiert abrufen
-        $stands = $campaignStandRepository->findBy([], ['startTime' => 'ASC']);
+        // Nur aktive Stände anzeigen (zukünftige + laufende)
+        $stands = $campaignStandRepository->findActive();
         return $this->render('home/index.html.twig', [
             'stands' => $stands,
         ]);

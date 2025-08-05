@@ -57,6 +57,14 @@
                                 </a>
                                 <ul class="dropdown-menu">
                                     {% if is_granted('ROLE_ADMIN') %}
+                                        <li><a class="dropdown-item" href="{{ path('app_campaign_stand_index') }}">
+                                            <i class="bi bi-calendar-event"></i>
+                                            Standverwaltung
+                                        </a></li>
+                                        <li><a class="dropdown-item" href="{{ path('app_finished_stands_index') }}">
+                                            <i class="bi bi-archive"></i>
+                                            Abgelaufene Stände
+                                        </a></li>
                                         <li><a class="dropdown-item" href="{{ path('app_user_index') }}">
                                             <i class="bi bi-people"></i>
                                             Benutzerverwaltung

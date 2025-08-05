@@ -37,14 +37,33 @@
                 <!-- Stände-Liste -->
                 <div class="accordion" id="standsAccordion">
                     {% for stand in stands %}
-                        <div class="card border-0 shadow-sm mb-3">
+                        {% set statusClass = '' %}
+                        {% set statusIcon = '' %}
+                        {% set statusText = '' %}
+                        {% set isDisabled = false %}
+
+                        {% if stand.isFuture %}
+                            {% set statusClass = 'border-success' %}
+                            {% set statusIcon = 'bi-calendar-plus text-success' %}
+                        {% elseif stand.isRunning %}
+                            {% set statusClass = 'border-warning' %}
+                            {% set statusIcon = 'bi-clock text-warning' %}
+                            {% set isDisabled = true %}
+                        {% else %}
+                            {% set statusClass = 'border-secondary' %}
+                            {% set statusIcon = 'bi-check2-circle text-secondary' %}
+                            {% set isDisabled = true %}
+                        {% endif %}
+
+                        <div class="card border-0 shadow-sm mb-3 {{ statusClass }} {{ isDisabled ? 'opacity-75' : '' }}">
                             <div class="card-header bg-white border-0 p-0">
-                                <button class="btn btn-link text-decoration-none p-4 w-100 text-start collapsed"
+                                <button class="btn btn-link text-decoration-none p-4 w-100 text-start collapsed {{ isDisabled ? 'pe-none' : '' }}"
                                         type="button"
                                         data-bs-toggle="collapse"
                                         data-bs-target="#collapse{{ stand.id }}"
                                         aria-expanded="false"
-                                        aria-controls="collapse{{ stand.id }}">
+                                        aria-controls="collapse{{ stand.id }}"
+                                        {{ isDisabled ? 'disabled' : '' }}>
                                     <div class="d-flex justify-content-between align-items-start">
                                         <div class="flex-grow-1 me-3">
                                             <!-- Stand-Info -->

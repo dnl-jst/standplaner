@@ -31,7 +31,7 @@
                                    class="form-control form-control-lg"
                                    id="participant_name"
                                    name="participant_name"
-                                   placeholder="Vor- und Nachname eingeben..."
+                                   placeholder="Name eingeben..."
                                    required>
                         </div>
                     </div>
@@ -54,28 +54,29 @@
 
                             <div class="row g-3">
                                 {% for stand in stands %}
+                                    {% set canRegister = stand.canRegister %}
                                     <div class="col-12">
-                                        <div class="border rounded p-3 bg-light">
+                                        <div class="border rounded p-3 {{ canRegister ? 'bg-light' : 'bg-light opacity-75' }}">
                                             <!-- Stand-Info -->
                                             <div class="row align-items-center">
                                                 <div class="col-12 col-md-8 mb-3 mb-md-0">
                                                     <div class="d-flex flex-column">
-                                                        <h6 class="mb-1 fw-bold">
+                                                        <h6 class="mb-1 fw-bold {{ canRegister ? '' : 'text-muted' }}">
                                                             <i class="bi bi-geo-alt-fill text-primary me-2"></i>
                                                             {{ stand.district }}
                                                         </h6>
                                                         <div class="d-flex flex-wrap gap-2 mb-2">
-                                                            <span class="badge bg-secondary">
+                                                            <span class="badge {{ canRegister ? 'bg-secondary' : 'bg-light text-muted border' }}">
                                                                 <i class="bi bi-calendar3 me-1"></i>
                                                                 {{ stand.startTime|date('d.m.Y') }}
                                                             </span>
-                                                            <span class="badge bg-secondary">
+                                                            <span class="badge {{ canRegister ? 'bg-secondary' : 'bg-light text-muted border' }}">
                                                                 <i class="bi bi-clock me-1"></i>
                                                                 {{ stand.startTime|date('H:i') }} - {{ stand.endTime|date('H:i') }}
                                                             </span>
                                                         </div>
                                                         {% if stand.address %}
-                                                            <small class="text-muted">
+                                                            <small class="{{ canRegister ? 'text-muted' : 'text-muted opacity-75' }}">
                                                                 <i class="bi bi-pin-map me-1"></i>
                                                                 {{ stand.address }}
                                                             </small>
@@ -86,19 +87,30 @@
                                                 <!-- Status-Button -->
                                                 <div class="col-12 col-md-4">
                                                     <div class="d-flex justify-content-center justify-content-md-end">
-                                                        <button type="button"
-                                                                class="btn btn-outline-secondary participation-btn"
-                                                                data-stand-id="{{ stand.id }}"
-                                                                data-status="unknown">
-                                                            <i class="bi bi-question-circle me-2"></i>
-                                                            <span class="status-text">Unentschieden</span>
-                                                        </button>
+                                                        {% if canRegister %}
+                                                            <button type="button"
+                                                                    class="btn btn-outline-secondary participation-btn"
+                                                                    data-stand-id="{{ stand.id }}"
+                                                                    data-status="unknown">
+                                                                <i class="bi bi-question-circle me-2"></i>
+                                                                <span class="status-text">Unentschieden</span>
+                                                            </button>
 
-                                                        <!-- Hidden Input für Formular -->
-                                                        <input type="hidden"
-                                                               name="participations[{{ stand.id }}]"
-                                                               value=""
-                                                               class="participation-input">
+                                                            <!-- Hidden Input für Formular -->
+                                                            <input type="hidden"
+                                                                   name="participations[{{ stand.id }}]"
+                                                                   value=""
+                                                                   class="participation-input">
+                                                        {% else %}
+                                                            <button type="button" class="btn btn-outline-secondary" disabled>
+                                                                <i class="bi bi-lock me-2"></i>
+                                                                {% if stand.isRunning %}
+                                                                    Läuft bereits
+                                                                {% else %}
+                                                                    Beendet
+                                                                {% endif %}
+                                                            </button>
+                                                        {% endif %}
                                                     </div>
                                                 </div>
                                             </div>

@@ -52,4 +52,57 @@ class CampaignStandRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * Find all active campaign stands (future + running)
+     */
+    public function findActive(): array
+    {
+        return $this->createQueryBuilder('c')
+            ->where('c.endTime > :now')
+            ->setParameter('now', new \DateTimeImmutable())
+            ->orderBy('c.startTime', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Find all future campaign stands (registration possible)
+     */
+    public function findFuture(): array
+    {
+        return $this->createQueryBuilder('c')
+            ->where('c.startTime > :now')
+            ->setParameter('now', new \DateTimeImmutable())
+            ->orderBy('c.startTime', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Find all running campaign stands
+     */
+    public function findRunning(): array
+    {
+        return $this->createQueryBuilder('c')
+            ->where('c.startTime <= :now')
+            ->andWhere('c.endTime > :now')
+            ->setParameter('now', new \DateTimeImmutable())
+            ->orderBy('c.startTime', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Find all finished campaign stands
+     */
+    public function findFinished(): array
+    {
+        return $this->createQueryBuilder('c')
+            ->where('c.endTime <= :now')
+            ->setParameter('now', new \DateTimeImmutable())
+            ->orderBy('c.startTime', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }
