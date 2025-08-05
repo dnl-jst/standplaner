@@ -32,7 +32,7 @@ jobs:
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '8.2'
+        php-version: '8.3'
         extensions: mbstring, xml, ctype, iconv, intl, pdo_pgsql, dom, filter, gd, json, pdo
         tools: composer:v2
         coverage: xdebug
@@ -110,7 +110,7 @@ jobs:
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '8.2'
+        php-version: '8.3'
         extensions: mbstring, xml, ctype, iconv, intl, pdo_pgsql
         tools: composer:v2
 
@@ -135,7 +135,7 @@ jobs:
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '8.2'
+        php-version: '8.3'
         extensions: mbstring, xml, ctype, iconv, intl, pdo_pgsql
         tools: composer:v2
 
@@ -166,12 +166,9 @@ jobs:
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '8.2'
+        php-version: '8.3'
         extensions: mbstring, xml, ctype, iconv, intl, pdo_pgsql
         tools: composer:v2
-
-    - name: Install dependencies
-      run: composer install --no-progress --prefer-dist --optimize-autoloader
 
     - name: Install dependencies
       run: composer install --no-progress --prefer-dist --optimize-autoloader
