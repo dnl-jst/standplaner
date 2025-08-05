@@ -69,6 +69,10 @@ COPY docker/supervisor/supervisord.conf /etc/supervisord.conf
 COPY docker/startup.sh /usr/local/bin/startup.sh
 RUN chmod +x /usr/local/bin/startup.sh
 
+# Erstelle Log-Verzeichnisse für Supervisor
+RUN mkdir -p /var/log/supervisor \
+    && chmod 755 /var/log/supervisor
+
 # Expose Port
 EXPOSE 80
 
@@ -76,8 +80,8 @@ EXPOSE 80
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD curl -f http://localhost/health || exit 1
 
-# Wechsle zu app user
-USER app
+# Supervisor muss als root laufen
+USER root
 
 # Start Command
 CMD ["/usr/local/bin/startup.sh"]
