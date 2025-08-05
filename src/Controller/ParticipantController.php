@@ -23,7 +23,7 @@ class ParticipantController extends AbstractController
             ->orderBy('p.name', 'ASC')
             ->getQuery()
             ->getResult();
-        
+
         // Alle Stände nach Startzeit sortiert für die Tabellenköpfe
         $stands = $campaignStandRepository->findBy([], ['startTime' => 'ASC']);
 

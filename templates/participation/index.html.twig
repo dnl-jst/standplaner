@@ -27,11 +27,11 @@
                             Dein Name
                         </h5>
                         <div class="mb-3">
-                            <input type="text" 
-                                   class="form-control form-control-lg" 
-                                   id="participant_name" 
-                                   name="participant_name" 
-                                   placeholder="Vor- und Nachname eingeben..." 
+                            <input type="text"
+                                   class="form-control form-control-lg"
+                                   id="participant_name"
+                                   name="participant_name"
+                                   placeholder="Vor- und Nachname eingeben..."
                                    required>
                         </div>
                     </div>
@@ -82,21 +82,21 @@
                                                         {% endif %}
                                                     </div>
                                                 </div>
-                                                
+
                                                 <!-- Status-Button -->
                                                 <div class="col-12 col-md-4">
                                                     <div class="d-flex justify-content-center justify-content-md-end">
-                                                        <button type="button" 
-                                                                class="btn btn-outline-secondary participation-btn" 
+                                                        <button type="button"
+                                                                class="btn btn-outline-secondary participation-btn"
                                                                 data-stand-id="{{ stand.id }}"
                                                                 data-status="unknown">
                                                             <i class="bi bi-question-circle me-2"></i>
                                                             <span class="status-text">Unentschieden</span>
                                                         </button>
-                                                        
+
                                                         <!-- Hidden Input für Formular -->
-                                                        <input type="hidden" 
-                                                               name="participations[{{ stand.id }}]" 
+                                                        <input type="hidden"
+                                                               name="participations[{{ stand.id }}]"
                                                                value=""
                                                                class="participation-input">
                                                     </div>
@@ -167,7 +167,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const currentStatus = this.getAttribute('data-status');
             const standId = this.getAttribute('data-stand-id');
             const hiddenInput = this.parentElement.querySelector('.participation-input');
-            
+
             // Nächsten Status bestimmen
             let nextStatus;
             switch(currentStatus) {
@@ -194,20 +194,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function updateButton(button, status, hiddenInput) {
         const config = statusConfig[status];
-        
+
         // Button-Status setzen
         button.setAttribute('data-status', status);
-        
+
         // CSS-Klassen aktualisieren
         button.className = 'btn participation-btn ' + config.class;
-        
+
         // Icon und Text aktualisieren
         const icon = button.querySelector('i');
         const text = button.querySelector('.status-text');
-        
+
         icon.className = 'bi ' + config.icon + ' me-2';
         text.textContent = config.text;
-        
+
         // Hidden Input aktualisieren
         hiddenInput.value = config.value;
     }
@@ -216,24 +216,24 @@ document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('participationForm');
     form.addEventListener('submit', function(e) {
         const nameInput = document.getElementById('participant_name');
-        
+
         if (!nameInput.value.trim()) {
             e.preventDefault();
             nameInput.focus();
             alert('Bitte gib deinen Namen ein.');
             return;
         }
-        
+
         // Überprüfen ob mindestens eine Auswahl getroffen wurde
         const inputs = document.querySelectorAll('.participation-input');
         let hasSelection = false;
-        
+
         inputs.forEach(input => {
             if (input.value && input.value !== '') {
                 hasSelection = true;
             }
         });
-        
+
         if (!hasSelection) {
             const confirmSubmit = confirm('Du hast noch keine Teilnahme ausgewählt. Trotzdem speichern?');
             if (!confirmSubmit) {

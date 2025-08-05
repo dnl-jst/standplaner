@@ -52,7 +52,7 @@ class ParticipationController extends AbstractController
         // Bestehende Teilnahmen des Teilnehmers löschen
         $existingParticipations = $entityManager->getRepository(StandParticipation::class)
             ->findBy(['participant' => $participant]);
-        
+
         foreach ($existingParticipations as $existing) {
             $entityManager->remove($existing);
         }
