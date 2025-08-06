@@ -47,7 +47,7 @@ when@prod:
                 level: info
                 formatter: monolog.formatter.json
                 channels: ["!event", "!doctrine", "!deprecation"]
-            
+
             # Error logs to stderr
             error:
                 type: stream
@@ -55,13 +55,13 @@ when@prod:
                 level: error
                 formatter: monolog.formatter.json
                 channels: ["!event", "!doctrine", "!deprecation"]
-            
+
             # Console logs
             console:
                 type: console
                 process_psr_3_messages: false
                 channels: ["!event", "!doctrine"]
-                
+
             # Deprecation warnings to stderr
             deprecation:
                 type: stream

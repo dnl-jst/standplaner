@@ -18,7 +18,7 @@
 ## Beispiele für DSGVO-konforme Logs:
 ```
 ✅ "User registration completed, 5 stands registered"
-✅ "Login attempt failed: invalid credentials"  
+✅ "Login attempt failed: invalid credentials"
 ✅ "Database migration completed in 2.3 seconds"
 
 ❌ "User john.doe@example.com registered from IP 192.168.1.1"
