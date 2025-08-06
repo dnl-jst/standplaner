@@ -7,6 +7,7 @@ use App\Entity\StandParticipation;
 use App\Repository\CampaignStandRepository;
 use App\Repository\ParticipantRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -30,13 +31,20 @@ class ParticipationController extends AbstractController
         Request $request,
         CampaignStandRepository $campaignStandRepository,
         ParticipantRepository $participantRepository,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        LoggerInterface $logger
     ): Response {
         $name = trim($request->request->get('participant_name', ''));
         $participations = $request->request->all('participations');
 
+        $logger->info('Participation save attempt', [
+            'participant_name' => $name,
+            'participations_count' => count($participations)
+        ]);
+
         // Validierung
         if (empty($name)) {
+            $logger->warning('Participation save failed: empty name');
             $this->addFlash('error', 'Bitte gib deinen Namen ein.');
             return $this->redirectToRoute('app_participation');
         }
@@ -79,6 +87,12 @@ class ParticipationController extends AbstractController
         }
 
         $entityManager->flush();
+
+        $logger->info('Participation save completed', [
+            'participant_name' => $name,
+            'stands_registered' => $savedCount,
+            'total_participations' => count($participations)
+        ]);
 
         if ($savedCount > 0) {
             $this->addFlash('success', sprintf(
