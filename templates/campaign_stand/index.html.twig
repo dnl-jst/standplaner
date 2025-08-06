@@ -132,18 +132,36 @@
                                                        title="Bearbeiten">
                                                         <i class="bi bi-pencil"></i>
                                                     </a>
-                                                    {% if stats.total == 0 %}
+                                                    {% if stats.total == 0 and stand.isFuture %}
                                                         <form method="post" action="{{ path('app_campaign_stand_delete', {'id': stand.id}) }}"
                                                               onsubmit="return confirm('Bist du sicher, dass du diesen Stand löschen möchtest?')"
-                                                              class="d-inline">
+                                                              style="display: inline;">
                                                             <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ stand.id) }}">
-                                                            <button class="btn btn-outline-danger btn-sm" title="Löschen">
+                                                            <button type="submit" class="btn btn-outline-danger btn-sm border-start-0" 
+                                                                    title="Stand löschen"
+                                                                    style="border-top-left-radius: 0; border-bottom-left-radius: 0;">
                                                                 <i class="bi bi-trash"></i>
                                                             </button>
                                                         </form>
                                                     {% else %}
-                                                        <button class="btn btn-outline-danger btn-sm disabled"
-                                                                title="Kann nicht gelöscht werden - Anmeldungen vorhanden">
+                                                        {% set reason = '' %}
+                                                        {% if stats.total > 0 %}
+                                                            {% set reason = stats.total ~ ' Anmeldung(en) vorhanden' %}
+                                                        {% elseif not stand.isFuture %}
+                                                            {% if stand.isRunning %}
+                                                                {% set reason = 'Stand läuft bereits' %}
+                                                            {% else %}
+                                                                {% set reason = 'Stand ist bereits beendet' %}
+                                                            {% endif %}
+                                                        {% endif %}
+                                                        
+                                                        <button type="button" 
+                                                                class="btn btn-secondary btn-sm border-start-0 disabled opacity-50"
+                                                                disabled
+                                                                title="Stand kann nicht gelöscht werden: {{ reason }}"
+                                                                data-bs-toggle="tooltip" 
+                                                                data-bs-placement="top"
+                                                                style="border-top-left-radius: 0; border-bottom-left-radius: 0; cursor: not-allowed;">
                                                             <i class="bi bi-trash"></i>
                                                         </button>
                                                     {% endif %}
@@ -172,4 +190,14 @@
         </div>
     </div>
 </div>
+
+<script>
+// Bootstrap Tooltips aktivieren
+document.addEventListener('DOMContentLoaded', function() {
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+});
+</script>
 {% endblock %}

@@ -150,6 +150,8 @@ final class CampaignStandController extends AbstractController
             // Prüfen, ob bereits Anmeldungen vorhanden sind
             if ($campaignStand->getParticipations()->count() > 0) {
                 $this->addFlash('error', 'Der Stand kann nicht gelöscht werden, da bereits Anmeldungen vorhanden sind.');
+            } elseif (!$campaignStand->isFuture()) {
+                $this->addFlash('error', 'Der Stand kann nicht gelöscht werden, da er bereits begonnen hat oder beendet ist.');
             } else {
                 $entityManager->remove($campaignStand);
                 $entityManager->flush();
