@@ -1,7 +1,7 @@
 # Trusted Proxies Konfiguration
 
 ## Problem
-Wenn die Anwendung hinter einem Reverse Proxy (wie Nginx, Traefik, oder Load Balancer) läuft, 
+Wenn die Anwendung hinter einem Reverse Proxy (wie Nginx, Traefik, oder Load Balancer) läuft,
 kann Symfony die ursprünglichen Client-Informationen nicht korrekt verarbeiten. Dies führt zu:
 
 - CSRF-Validierungsfehlern
@@ -16,7 +16,7 @@ Die Trusted Proxies Konfiguration teilt Symfony mit, welchen Proxies es vertraue
 # config/packages/prod/framework.yaml
 framework:
     trusted_proxies: '%env(TRUSTED_PROXIES)%'
-    trusted_headers: 
+    trusted_headers:
         - 'x-forwarded-for'      # Ursprüngliche Client-IP
         - 'x-forwarded-host'     # Ursprünglicher Host-Header
         - 'x-forwarded-proto'    # Ursprüngliches Protokoll (http/https)

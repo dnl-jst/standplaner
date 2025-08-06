@@ -3,13 +3,13 @@ framework:
     # Trusted Proxies für Production (Docker/Reverse Proxy)
     # Erlaube alle lokalen und private Netzwerk-Ranges
     trusted_proxies: '%env(default::TRUSTED_PROXIES)%'
-    trusted_headers: 
+    trusted_headers:
         - 'x-forwarded-for'
-        - 'x-forwarded-host' 
+        - 'x-forwarded-host'
         - 'x-forwarded-proto'
         - 'x-forwarded-port'
         - 'x-forwarded-prefix'
-    
+
     session:
         # Use filesystem for session storage in production
         handler_id: 'session.handler.native_file'
