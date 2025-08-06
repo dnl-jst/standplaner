@@ -28,6 +28,12 @@ echo "Setting final permissions..."
 chown -R app:app var/
 chmod -R 755 var/
 
+# Erstelle Session-Verzeichnis mit korrekten Berechtigungen
+echo "Creating session directory..."
+mkdir -p var/sessions
+chown -R app:app var/sessions
+chmod -R 777 var/sessions
+
 echo "Application is ready!"
 
 # Starte Supervisor

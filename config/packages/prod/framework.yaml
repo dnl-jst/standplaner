@@ -1,0 +1,15 @@
+# Production-specific session configuration
+framework:
+    session:
+        # Use filesystem for session storage in production
+        handler_id: 'session.handler.native_file'
+        # Session cookie settings for production
+        cookie_secure: auto
+        cookie_httponly: true
+        cookie_samesite: lax
+        # Set session save path to writable directory
+        save_path: '%kernel.project_dir%/var/sessions'
+        # Session garbage collection
+        gc_probability: 1
+        gc_divisor: 100
+        gc_maxlifetime: 1440
