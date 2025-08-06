@@ -25,6 +25,16 @@ jobs:
         ports:
           - 5432:5432
 
+      redis:
+        image: redis:7-alpine
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -66,6 +76,7 @@ jobs:
       run: |
         cp .env .env.test.local
         echo "DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:5432/standplaner_test" >> .env.test.local
+        echo "REDIS_URL=redis://localhost:6379" >> .env.test.local
         echo "APP_ENV=test" >> .env.test.local
         echo "APP_SECRET=test-secret-for-ci" >> .env.test.local
 
