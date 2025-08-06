@@ -69,10 +69,6 @@ COPY docker/supervisor/supervisord.conf /etc/supervisord.conf
 COPY docker/startup.sh /usr/local/bin/startup.sh
 RUN chmod +x /usr/local/bin/startup.sh
 
-# Erstelle Log-Verzeichnisse für Supervisor
-RUN mkdir -p /var/log/supervisor \
-    && chmod 755 /var/log/supervisor
-
 # Expose Port
 EXPOSE 80
 
