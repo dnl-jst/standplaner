@@ -4,13 +4,11 @@ framework:
 
     # Note that the session will be started ONLY if you read or write from it.
     session:
-        # Use PHP's native session handling
-        handler_id: null
+        # Use Redis for session handling in all environments
+        handler_id: 'session.handler.redis'
         # Session cookie settings
         cookie_secure: auto
         cookie_samesite: lax
-        # Session save path (using default)
-        save_path: '%kernel.cache_dir%/sessions'
 
     #esi: true
     #fragments: true

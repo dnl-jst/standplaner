@@ -1,0 +1,12 @@
+services:
+    # Redis session handler for development
+    session.handler.redis:
+        class: Symfony\Component\HttpFoundation\Session\Storage\Handler\RedisSessionHandler
+        arguments:
+            - '@redis_connection'
+            - { prefix: 'sess:', ttl: 86400 }
+
+    redis_connection:
+        class: Predis\Client
+        arguments:
+            - '%env(REDIS_URL)%'
